@@ -1,0 +1,56 @@
+# (A) Deployment: 파드(컨테이너)를 관리하는 명령서
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: article-service-deployment
+  labels:
+    app: article-service
+spec:
+  replicas: 1 # 파드 1개 실행 (안정성을 위해 나중에 2개로 늘릴 수 있음)
+  selector:
+    matchLabels:
+      app: article-service # 이 Deployment가 관리할 파드의 라벨
+  template:
+    metadata:
+      labels:
+        app: article-service # 위 selector와 일치해야 함
+    spec:
+      containers:
+      - name: article-service-container
+        # ⭐️ 1. (수정 필요) Docker Hub 이미지 주소
+        #    예: "ourhome527/member-service:v1"
+        image: "ourhome527/article-service:latest"
+        
+        # ⭐️ 2. (중요) 캐시 무시하고 항상 새 이미지 PULL 받기 (개발 중 필수)
+        imagePullPolicy: Always
+        
+        ports:
+        - containerPort: 8082 # ⭐️ application.yml의 server.port와 일치해야 함
+        
+        # (참고) DB 접속 정보 등을 환경 변수로 주입할 수 있음
+        # env:
+        # - name: SPRING_DATASOURCE_URL
+        #   value: "jdbc:mysql://..."
+
+      # ⭐️ 3. (선택) Private 저장소일 경우 인증 Secret 필요
+      # imagePullSecrets:
+      # - name: ncr-secret 
+---
+# (B) Service: 파드들에 대한 내부 네트워크 주소(DNS) 생성
+apiVersion: v1
+kind: Service
+metadata:
+  name: article-service # ⭐️ (중요) 다른 서비스들이 호출할 때 쓸 도메인 이름
+  # 예: ui-service에서 http://member-service:8081 로 호출
+spec:
+  # ClusterIP: 클러스터 내부에서만 접근 가능 (기본값)
+  # (member-service는 외부 노출 불필요 -> ui-service나 gateway가 호출함)
+  type: ClusterIP 
+  
+  selector:
+    app: article-service # 위 Deployment의 라벨과 일치해야 함
+  
+  ports:
+  - protocol: TCP
+    port: 8082 # 서비스가 노출하는 포트
+    targetPort: 8082 # 컨테이너가 실제로 듣고 있는 포트
