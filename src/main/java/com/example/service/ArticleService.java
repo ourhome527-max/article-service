@@ -1,17 +1,25 @@
 package com.example.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.example.domain.Article;
+import com.example.domain.dto.RegistArticleReq;
+import com.example.mapper.ArticleMapper;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ArticleService {
+	private final ArticleMapper articleMapper;
 
 	public List<Map<String, String>> getArticleList() {
 
@@ -41,5 +49,27 @@ public class ArticleService {
 
 		// 5. 데이터가 담긴 리스트 반환
 		return list;
+	}
+
+	/*
+	 * 게시글 작성
+	 */
+	public int registArticle(RegistArticleReq request) {
+		try {
+			Article article = new Article();
+			article.setTitle(request.getTitle());
+			article.setContent(request.getContent());
+			article.setWriterId(request.getWriterId());
+			article.setCategory(request.getCategory());
+			article.setRegAt(new Date());
+			article.setModAt(new Date());
+
+			int result = articleMapper.addArticle(article);
+			log.info("게시글 저장됨: {}", article);
+			return result; // 성공
+		} catch (Exception e) {
+			log.error("게시글 등록 실패", e);
+			return 0; // 실패
+		}
 	}
 }
