@@ -20,8 +20,8 @@
 				content,
 				writer_id,
 				category,
-				reg_dt,
-				mod_dt
+				reg_at,
+				mod_at
 			FROM
 				article
 		]]>
