@@ -13,17 +13,17 @@
 		]]>
 	</insert>
 	
-	<select id="getArticle" resultType="com.example.domain.Article">	
-		<![CDATA[ 
-			SELECT 
+	
+	<select id="getArticle" resultType="com.example.domain.Article">
+		<![CDATA[
+			SELECT
 				title,
 				content,
-				writer_id,
+				writer_id AS writerId,
 				category,
-				reg_at,
-				mod_at
-			FROM
-				article
+				reg_at AS regAt,
+				mod_at AS modAt
+			FROM article
 		]]>
 	</select>
 </mapper>
