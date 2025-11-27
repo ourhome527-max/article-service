@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ArticleService {
 	private final ArticleMapper articleMapper;
 
-	public List<Map<String, String>> getArticleList() {
+	public List<Map<String, String>> getArticleListTest() {
 
 		// 1. 반환할 리스트 생성
 		List<Map<String, String>> list = new ArrayList<>();
@@ -71,5 +71,10 @@ public class ArticleService {
 			log.error("게시글 등록 실패", e);
 			return 0; // 실패
 		}
+	}
+
+	public List<Article> getArticleList() {
+		List<Article> articleList = articleMapper.getArticle();
+		return articleList;
 	}
 }
