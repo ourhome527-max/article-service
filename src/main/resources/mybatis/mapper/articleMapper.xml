@@ -13,7 +13,7 @@
 		]]>
 	</insert>
 	
-	<select id="getArticle">
+	<select id="getArticle" resultType="com.example.domain.Article">	
 		<![CDATA[ 
 			SELECT 
 				title,

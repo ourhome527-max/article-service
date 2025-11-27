@@ -25,10 +25,10 @@ public class ArticleController {
 	private final ArticleService articleService;
 
 	// 글 목록 불러오기 - TEST CODE
-	@GetMapping(value = "/article-list")
-	public List<Map<String, String>> getArticleList() {
-		return articleService.getArticleListTest();
-	}
+//	@GetMapping(value = "/article-list")
+//	public List<Map<String, String>> getArticleList() {
+//		return articleService.getArticleListTest();
+//	}
 
 	// 글 등록 하기
 	@PostMapping("/regist")
@@ -44,6 +44,7 @@ public class ArticleController {
 	}
 
 	// 글 목록 불러오기
+	@GetMapping(value = "/article-list")
 	public ResponseEntity<List<Article>> articleList() {
 		return ResponseEntity.ok(articleService.getArticleList());
 	}
