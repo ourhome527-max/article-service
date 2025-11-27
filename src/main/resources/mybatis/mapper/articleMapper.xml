@@ -28,14 +28,14 @@
 	</select>
 	
 	<select id="findById" resultType="com.example.domain.Article">
-    SELECT
+    	SELECT
         id,
         title,
         content,
         writer_id AS writerId,
         category,
-        DATE_FORMAT(reg_at, '%Y-%m-%d %H:%i') AS regAt
-    FROM article
-    WHERE id = #{id}
+      	reg_at AS regAt,
+   		FROM article
+   		WHERE id = #{id}
 </select>
 </mapper>
