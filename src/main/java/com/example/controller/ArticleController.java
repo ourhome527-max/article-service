@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,5 +48,11 @@ public class ArticleController {
 	@GetMapping(value = "/article-list")
 	public ResponseEntity<List<Article>> articleList() {
 		return ResponseEntity.ok(articleService.getArticleList());
+	}
+
+	@GetMapping("/{articleId}")
+	public ResponseEntity<Article> getArticleById(@PathVariable("articleId") int articleId) {
+		Article res = articleService.getArticleDetail(articleId);
+		return ResponseEntity.ok(res);
 	}
 }

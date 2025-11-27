@@ -77,4 +77,8 @@ public class ArticleService {
 		List<Article> articleList = articleMapper.getArticle();
 		return articleList;
 	}
+
+	public Article getArticleDetail(int articleId) {
+		return articleMapper.findById(articleId);
+	}
 }

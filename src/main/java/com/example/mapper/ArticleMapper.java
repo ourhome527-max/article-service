@@ -11,4 +11,6 @@ public interface ArticleMapper {
 	int addArticle(Article article);
 
 	List<Article> getArticle();
+	
+	Article findById(int id);
 }
