@@ -37,14 +37,13 @@ public class ArticleController {
 
 	// 글 등록 하기
 	@PostMapping(value = "/regist", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Void> registArticle(@ModelAttribute RegistArticleReq request,
+	public ResponseEntity<Void> registArticle(@RequestPart("data") RegistArticleReq request,
 			@RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
 		log.info("게시글 등록 요청: title={}, writerId={}, files={}", request.getTitle(), request.getWriterId(),
 				(files != null ? files.size() : 0));
 
 		try {
-			// 서비스 호출 (DB 저장 + 파일 업로드)
 			int result = articleService.registArticle(request, files);
 
 			if (result > 0) {
