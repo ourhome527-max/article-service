@@ -3,12 +3,15 @@ package com.example.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.domain.Article;
@@ -32,14 +35,24 @@ public class ArticleController {
 //	}
 
 	// 글 등록 하기
-	@PostMapping("/regist")
-	public ResponseEntity<Void> registArticle(@RequestBody RegistArticleReq request) {
-		log.info("request: {}", request);
-		int result = articleService.registArticle(request);
+	@PostMapping(value = "/regist", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Void> registArticle(@RequestPart("article") RegistArticleReq request,
+			@RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
-		if (result > 0) {
-			return ResponseEntity.ok().build();
-		} else {
+		log.info("게시글 등록 요청: title={}, writerId={}, files={}", request.getTitle(), request.getWriterId(),
+				(files != null ? files.size() : 0));
+
+		try {
+			// 서비스 호출 (DB 저장 + 파일 업로드)
+			int result = articleService.registArticle(request, files);
+
+			if (result > 0) {
+				return ResponseEntity.ok().build();
+			} else {
+				return ResponseEntity.status(500).build();
+			}
+		} catch (Exception e) {
+			log.error("게시글 등록 중 오류 발생", e);
 			return ResponseEntity.status(500).build();
 		}
 	}

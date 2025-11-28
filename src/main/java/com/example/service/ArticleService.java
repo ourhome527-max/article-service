@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.example.client.FileClient;
 import com.example.domain.Article;
 import com.example.domain.dto.RegistArticleReq;
 import com.example.mapper.ArticleMapper;
@@ -20,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ArticleService {
 	private final ArticleMapper articleMapper;
+	private final FileClient fileClient;
 
 	public List<Map<String, String>> getArticleListTest() {
 
@@ -54,23 +57,48 @@ public class ArticleService {
 	/*
 	 * 게시글 작성
 	 */
-	public int registArticle(RegistArticleReq request) {
-		try {
-			Article article = new Article();
-			article.setTitle(request.getTitle());
-			article.setContent(request.getContent());
-			article.setWriterId(request.getWriterId());
-			article.setCategory(request.getCategory());
-			article.setRegAt(new Date());
-			article.setModAt(new Date());
+	public int registArticle(RegistArticleReq req, List<MultipartFile> files) {
 
-			int result = articleMapper.addArticle(article);
-			log.info("게시글 저장됨: {}", article);
-			return result; // 성공
-		} catch (Exception e) {
-			log.error("게시글 등록 실패", e);
-			return 0; // 실패
+		// 1) 게시글 객체 생성 및 데이터 설정
+		Article article = new Article();
+		article.setTitle(req.getTitle());
+		article.setContent(req.getContent());
+		article.setCategory(req.getCategory()); // 카테고리 저장
+		article.setWriterId(req.getWriterId());
+
+		// 2) DB에 게시글 저장 (MyBatis mapper 호출)
+		// articleMapper.addArticle(article)이 저장된 행의 개수(1)를 반환한다고 가정
+		// MyBatis XML에서 useGeneratedKeys="true" keyProperty="id" 설정 필요 (파일 업로드 시
+		// articleId 사용 위해)
+		int result = articleMapper.addArticle(article);
+
+		// 3) 파일이 있다면 file-service로 전송
+		if (files != null && !files.isEmpty()) {
+			// 파일 하나씩 업로드하거나, file-service API에 맞게 리스트로 전송
+			// 여기서는 FileClient 인터페이스가 단일 파일 업로드를 지원하는지, 리스트를 지원하는지에 따라 다름
+			// 현재 FileClient 코드: uploadFile(@RequestPart("file") MultipartFile file) -> 단일
+			// 파일
+
+			// 여러 파일 업로드를 위해 반복문 사용 (또는 FileClient에 다중 업로드 API 추가 필요)
+			for (MultipartFile file : files) {
+				if (!file.isEmpty()) {
+					// fileClient.uploadFile(file); // 단순 업로드 (파일 메타데이터만 반환)
+
+					// 만약 게시글 ID와 파일을 함께 저장해야 한다면 FileClient API 수정 필요
+					// 예: fileClient.uploadArticleFiles(article.getId(), file);
+					// 현재 제공된 FileClient에는 uploadFile만 있으므로 이를 호출
+					try {
+						fileClient.uploadFile(file);
+						// TODO: 반환된 FileMeta 정보를 이용해 Article_File 매핑 테이블에 저장하는 로직 추가 권장
+					} catch (Exception e) {
+						log.error("파일 업로드 실패: {}", file.getOriginalFilename(), e);
+						// 파일 업로드 실패 시 게시글 저장을 롤백할지 여부 결정 필요
+					}
+				}
+			}
 		}
+
+		return result;
 	}
 
 	public List<Article> getArticleList() {
