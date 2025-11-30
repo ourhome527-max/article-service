@@ -65,6 +65,7 @@ public class ArticleService {
 		article.setContent(req.getContent());
 		article.setCategory(req.getCategory()); // 카테고리 저장
 		article.setWriterId(req.getWriterId());
+		log.info("게시글 번호: {}", article.getId());
 
 		// 2) DB에 게시글 저장 (MyBatis mapper 호출)
 		// articleMapper.addArticle(article)이 저장된 행의 개수(1)를 반환한다고 가정
