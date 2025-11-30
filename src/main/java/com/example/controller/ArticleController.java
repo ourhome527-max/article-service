@@ -37,7 +37,10 @@ public class ArticleController {
 
 	// 글 등록 하기
 	@PostMapping(value = "/regist", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Void> registArticle(@ModelAttribute RegistArticleReq request,
+	public ResponseEntity<Void> registArticle(
+			// 변경: @ModelAttribute -> @RequestPart("article")
+			// 이렇게 하면 "article"이라는 이름의 파트에 JSON 데이터가 들어오기를 기대합니다.
+			@RequestPart("article") RegistArticleReq request,
 			@RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
 		log.info("게시글 등록 요청: title={}, writerId={}, files={}", request.getTitle(), request.getWriterId(),
