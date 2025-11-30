@@ -88,7 +88,7 @@ public class ArticleService {
 					// 예: fileClient.uploadArticleFiles(article.getId(), file);
 					// 현재 제공된 FileClient에는 uploadFile만 있으므로 이를 호출
 					try {
-						fileClient.uploadFile(file);
+						fileClient.uploadFile(file, article.getId());
 						// TODO: 반환된 FileMeta 정보를 이용해 Article_File 매핑 테이블에 저장하는 로직 추가 권장
 					} catch (Exception e) {
 						log.error("파일 업로드 실패: {}", file.getOriginalFilename(), e);

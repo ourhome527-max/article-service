@@ -4,7 +4,7 @@
 <mapper namespace="com.example.mapper.ArticleMapper">
 
 	<!-- 게시글 등록 -->
-	<insert id="addArticle" parameterType="com.example.domain.Article">
+	<insert id="addArticle" useGeneratedKeys="true" keyProperty="id" parameterType="com.example.domain.Article">
 		<![CDATA[ 
 		 	INSERT INTO article
     			(title, content, writer_id, category, reg_at, mod_at)

@@ -14,7 +14,8 @@ import com.example.domain.FileMeta;
 public interface FileClient {
 
 	@PostMapping(value = "/upload", consumes = "multipart/form-data")
-	ResponseEntity<FileMeta> uploadFile(@RequestPart("file") MultipartFile file);
+	ResponseEntity<FileMeta> uploadFile(@RequestPart("file") MultipartFile file,
+			@RequestPart("articleId") int articleId);
 
 	@GetMapping("/{fileId}")
 	ResponseEntity<FileMeta> getFileMeta(@PathVariable("fileId") Long fileId);
