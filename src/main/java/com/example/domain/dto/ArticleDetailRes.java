@@ -1,7 +1,9 @@
-package com.example.domain;
+package com.example.domain.dto;
 
 import java.util.Date;
 import java.util.List;
+
+import com.example.domain.FileMeta;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +16,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Article {
+public class ArticleDetailRes {
 	private int id;
 	private String title;
 	private String content;
@@ -22,4 +24,5 @@ public class Article {
 	private String category;
 	private Date regAt;
 	private Date modAt;
+	private List<FileMeta> fileList;
 }

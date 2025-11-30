@@ -1,5 +1,7 @@
 package com.example.client;
 
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,6 @@ public interface FileClient {
 	ResponseEntity<FileMeta> uploadFile(@RequestPart("file") MultipartFile file,
 			@RequestPart("articleId") int articleId);
 
-	@GetMapping("/{fileId}")
-	ResponseEntity<FileMeta> getFileMeta(@PathVariable("fileId") Long fileId);
+	@GetMapping("/{articleId}")
+	List<FileMeta> getFilesByArticleId(@PathVariable("articleId") int articleId);
 }

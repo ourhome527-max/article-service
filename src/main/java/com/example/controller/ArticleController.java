@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.domain.Article;
+import com.example.domain.dto.ArticleDetailRes;
 import com.example.domain.dto.RegistArticleReq;
 import com.example.service.ArticleService;
 
@@ -63,9 +64,10 @@ public class ArticleController {
 		return ResponseEntity.ok(articleService.getArticleList());
 	}
 
+	// 게시글 요청
 	@GetMapping("/{articleId}")
-	public ResponseEntity<Article> getArticleById(@PathVariable("articleId") int articleId) {
-		Article res = articleService.getArticleDetail(articleId);
+	public ResponseEntity<ArticleDetailRes> getArticleById(@PathVariable("articleId") int articleId) {
+		ArticleDetailRes res = articleService.getArticleDetail(articleId);
 		return ResponseEntity.ok(res);
 	}
 }

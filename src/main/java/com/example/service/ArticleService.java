@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.client.FileClient;
 import com.example.domain.Article;
+import com.example.domain.FileMeta;
+import com.example.domain.dto.ArticleDetailRes;
 import com.example.domain.dto.RegistArticleReq;
 import com.example.mapper.ArticleMapper;
 
@@ -107,7 +109,20 @@ public class ArticleService {
 		return articleList;
 	}
 
-	public Article getArticleDetail(int articleId) {
-		return articleMapper.findById(articleId);
+	public ArticleDetailRes getArticleDetail(int articleId) {
+		ArticleDetailRes articleDetail = new ArticleDetailRes();
+		Article article = articleMapper.findById(articleId);
+		articleDetail.setId(article.getId());
+		articleDetail.setTitle(article.getTitle());
+		articleDetail.setContent(article.getContent());
+		articleDetail.setWriterId(article.getWriterId());
+		articleDetail.setCategory(article.getCategory());
+		articleDetail.setRegAt(article.getRegAt());
+		articleDetail.setModAt(article.getModAt());
+
+		List<FileMeta> fileList = fileClient.getFilesByArticleId(articleId);
+		articleDetail.setFileList(fileList);
+		log.info("articleDetail: {}", articleDetail);
+		return articleDetail;
 	}
 }
